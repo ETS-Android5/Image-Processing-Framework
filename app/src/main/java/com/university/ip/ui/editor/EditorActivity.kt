@@ -27,21 +27,8 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
 
     override fun appContext(): Context = applicationContext
     private val TAG = "EditorActivity"
-    var prevBrightnessProgress = 1
-    var prevContrastProgress = 1
     var prevBinarizingProgress = 1
-    var prevBlurProgress = 1
-    var prevMedianBlurProgress = 1
-    var prev2dConvProgress = 1
-    var prevSharpenProgress = 1
-    var prevGrayProgress = 1
-    var prevBilateralProgress = 1
-    var prevRedCProgress = 1
-    var prevGreenCProgress = 1
-    var prevBlueCProgress = 1
-    var prevRedBProgress = 1
-    var prevGreenBProgress = 1
-    var prevBlueBProgress = 1
+
     private lateinit var backButton: ImageView
     private lateinit var saveButton: TextView
     private lateinit var imageView: ImageView
@@ -49,8 +36,6 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
 
     private lateinit var filterList: RecyclerView
     private lateinit var seekBar: SeekBar
-    private lateinit var seekBar1: SeekBar
-    private lateinit var seekBar2: SeekBar
 
     private lateinit var adapter: FiltersAdapter
 
@@ -77,8 +62,7 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
         filterList.adapter = adapter
 
         seekBar = findViewById(R.id.seek_bar_editor)
-        seekBar1 = findViewById(R.id.seek_bar_editor1)
-        seekBar2 = findViewById(R.id.seek_bar_editor2)
+
 
         backButton = findViewById(R.id.back_editor)
         backButton.setOnClickListener(this)
@@ -98,58 +82,6 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
             setDisplayHomeAsUpEnabled(false)
             setDisplayShowHomeEnabled(false)
         }
-
-        // onTouch listener function when the image is clicked
-        imageView.setOnTouchListener { v, m -> // Perform tasks here
-            zoom_controls.show()
-            false
-        }
-
-        btn_flip.setOnClickListener({
-            presenter.flip(bitmap)
-        })
-
-        rotate_left.setOnClickListener({
-            presenter.rotate90ClockWise(bitmap)
-        })
-
-        rotate_right.setOnClickListener({
-            presenter.rotate90CounterClockWise(bitmap)
-        })
-
-        // This function will be automatically called out,when
-        // zoom in button is being pressed
-        zoom_controls.setOnZoomInClickListener(
-                View.OnClickListener {
-                    val x: Float = imageView.getScaleX()
-                    val y: Float = imageView.getScaleY()
-
-                    // setting the new scale
-                    imageView.scaleX = (x + 0.5f) as Float
-                    imageView.scaleY = (y + 0.5f) as Float
-                    zoom_controls.hide()
-                }
-        )
-
-        // This function will be called when
-        // zoom out button is pressed
-        zoom_controls.setOnZoomOutClickListener(
-                View.OnClickListener {
-                    val x: Float = imageView.getScaleX()
-                    val y: Float = imageView.getScaleY()
-                    if (x == 1f && y == 1f) {
-                        imageView.setScaleX(x as Float)
-                        imageView.setScaleY(y as Float)
-                        zoom_controls.hide()
-                    } else {
-                        // setting the new scale
-                        imageView.setScaleX((x - 0.5f) as Float)
-                        imageView.setScaleY((y - 0.5f) as Float)
-                        // hiding the zoom controls
-                        zoom_controls.hide()
-                    }
-                }
-        )
     }
 
     private fun openCvInit() {
@@ -200,8 +132,8 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
         const val INTENT_EXTRAS: String = "INTENT_EXTRAS"
         const val REQUEST_CODE: String = "REQUEST_CODE"
         const val RESULT_CODE: String = "RESULT_CODE"
-        val FILTERS_ARRAY: List<String> = listOf("Brightness", "Contrast", "Binarizing","Blur","Median","High Pass","Sharpen","Gray","Adaptive Binary","Bilateral","RGB Contrast","RGB Brightness","Zoom")
-        val FILTERS_SLIDER_ARRAY: List<String> = listOf("Brightness", "Contrast","Binarizing","Blur","Median","High Pass","Sharpen","Gray","Adaptive Binary","Bilateral","RGB Contrast","RGB Brightness","Zoom")
+        val FILTERS_ARRAY: List<String> = listOf("Thresholding","Adaptive Thresholding")
+        val FILTERS_SLIDER_ARRAY: List<String> = listOf("Thresholding","Adaptive Thresholding")
     }
 
     override fun onClick(v: View?) {
@@ -225,91 +157,14 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
             seekBar.visibility = View.VISIBLE
             seekBar.setOnSeekBarChangeListener(this)
             when (FILTERS_SLIDER_ARRAY.indexOf(selectedFilter)) {
+
                 0 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                    seekBar.max=100
+                    seekBar.max=255
                     return
                 }
+
                 1 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                    seekBar.max=25
-                    return
-                }
-                2 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
                     seekBar.max=255
-
-                    return
-                }
-                3 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                    seekBar.max=500
-                    return
-                }
-                4 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                    seekBar.max=255
-                    return
-                }
-                5 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                   seekBar.max=31
-                   return
-                }
-                6 -> {
-                    seekBar2.visibility = View.GONE
-                    seekBar1.visibility = View.GONE
-                    seekBar.max=60
-                    return
-                }
-                7 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                    seekBar.max=2
-                    return
-                }
-                8 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                    seekBar.max=255
-                    return
-                }
-                9 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar.max=25
-                    return
-                }
-                10 -> {
-                    seekBar1.visibility = View.VISIBLE
-                    seekBar1.setOnSeekBarChangeListener(this)
-                    seekBar2.visibility = View.VISIBLE
-                    seekBar2.setOnSeekBarChangeListener(this)
-                    seekBar.max=255
-                    seekBar1.max=255
-                    seekBar2.max=255
-                    return
-                }
-                11 -> {
-
-                    seekBar1.visibility = View.VISIBLE
-                    seekBar1.setOnSeekBarChangeListener(this)
-                    seekBar2.visibility = View.VISIBLE
-                    seekBar2.setOnSeekBarChangeListener(this)
-                    seekBar.max=255
-                    seekBar1.max=255
-                    seekBar2.max=255
-                    return
-                }
-                12 -> {
-                    seekBar1.visibility = View.GONE
-                    seekBar2.visibility = View.GONE
-                    seekBar.max=100
                     return
                 }
 
@@ -322,26 +177,14 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
     }
 
     override fun onProgressChanged(seekBarr: SeekBar, progress: Int, fromUser: Boolean) {
+        textView4.text=progress.toString();
         println(progress)
         println(selectedFilter)
         when (FILTERS_SLIDER_ARRAY.indexOf(selectedFilter)) {
+
             0 -> {
-                    seekBarr.progress = prevBrightnessProgress
-                    bitmap = originalBitmap
-                    presenter.increaseBrightness(bitmap, progress)
-                    prevBrightnessProgress = progress
-                return
-            }
-            1 -> {
-                    seekBarr.progress = prevContrastProgress
-                    bitmap = originalBitmap
-                    presenter.increaseContrast(bitmap, progress)
-                    prevContrastProgress = progress
-                return
-            }
-            2 -> {
                 seekBarr.progress = prevBinarizingProgress
-                if(progress>=20) {
+                if(progress!=1) {
                     bitmap = originalBitmap
                     presenter.toBinary(bitmap, progress)
                 } else {
@@ -351,48 +194,11 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
                 prevBinarizingProgress = progress
                 return
             }
-            3 -> {
-                    seekBarr.progress = prevBlurProgress
-                    bitmap = originalBitmap
-                    presenter.blur(bitmap,progress)
-                    prevBlurProgress = progress
-                return
-            }
-            4 -> {
-                seekBarr.progress = prevMedianBlurProgress
-                bitmap = originalBitmap
-                presenter.medianBlur(bitmap,progress)
-                prevMedianBlurProgress = progress
-                return
-            }
-            5 -> {
-                seekBarr.progress = prev2dConvProgress
-                bitmap = originalBitmap
-                presenter.highPass(bitmap,progress)
-                prev2dConvProgress = progress
-                return
-            }
-            6 -> {
-                seekBarr.progress = prevSharpenProgress
-                bitmap = originalBitmap
-                presenter.unsharpMask(bitmap,progress)
-                prevSharpenProgress = progress
-                return
-            }
-            7 -> {
-                seekBarr.progress = prevGrayProgress
-                bitmap = originalBitmap
-                if(progress<2){
-                    setBitmap(bitmap)
-                } else {
-                    presenter.toGray(bitmap)
-                }
-                prevGrayProgress = progress
-                return
-            }
-            8 -> {
+
+
+            1 -> {
                 seekBarr.progress = prevBinarizingProgress
-                if(progress>=20) {
+                if(progress!=1) {
                     bitmap = originalBitmap
                     presenter.toAdaptiveBinary(bitmap, progress)
                 } else {
@@ -402,51 +208,9 @@ class EditorActivity : AppCompatActivity(), EditorContract.View, View.OnClickLis
                 prevBinarizingProgress = progress
                 return
             }
-            9 -> {
-                seekBarr.progress = prevBilateralProgress
-                bitmap = originalBitmap
-                presenter.bilateralFilter(bitmap, progress)
-                prevBilateralProgress = progress
-                return
-            }
-            10 -> {
-                seekBar.progress = prevRedCProgress
-                seekBar1.progress = prevGreenCProgress
-                seekBar2.progress = prevBlueCProgress
-                bitmap = originalBitmap
-                presenter.modifyRGBContrast(bitmap, seekBar.progress.toDouble(),seekBar1.progress.toDouble(),seekBar2.progress.toDouble())
-                if(seekBarr == seekBar){
-                    prevRedCProgress = progress
-                } else  if(seekBarr == seekBar1){
-                    prevGreenCProgress = progress
-                } else prevBlueCProgress = progress
-                return
-            }
-
-            11 -> {
-                seekBar.progress = prevRedBProgress
-                seekBar1.progress = prevGreenBProgress
-                seekBar2.progress = prevBlueBProgress
-                bitmap = originalBitmap
-                presenter.modifyRGBContrast(bitmap, seekBar.progress.toDouble(),seekBar1.progress.toDouble(),seekBar2.progress.toDouble())
-                if(seekBarr == seekBar){
-                    prevRedBProgress = progress
-                } else  if(seekBarr == seekBar1){
-                    prevGreenBProgress = progress
-                } else prevBlueBProgress = progress
-                return
-            }
-            12 -> {
-                seekBarr.progress = prevSharpenProgress
-                bitmap = originalBitmap
-                presenter.zoomIn(bitmap,progress)
-                prevSharpenProgress = progress
-                return
-            }
 
             else -> return
         }
-
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {}

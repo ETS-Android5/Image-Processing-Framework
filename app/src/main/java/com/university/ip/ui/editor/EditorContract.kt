@@ -11,39 +11,9 @@ interface EditorContract {
     }
 
     interface Presenter {
-        //functions that are going to use our library
-        fun increaseBrightness(bitmap: Bitmap, value: Int)
-
-        fun increaseContrast(bitmap: Bitmap, value: Int)
-
-        fun toGray(bitmap: Bitmap)
 
         fun toBinary(bitmap: Bitmap,threshold: Int)
 
         fun toAdaptiveBinary(bitmap: Bitmap,threshold: Int)
-
-        fun bilateralFilter(bitmap: Bitmap,value: Int)
-
-        fun blur(bitmap: Bitmap, value: Int)
-
-        fun medianBlur(bitmap: Bitmap, value: Int)
-
-        fun highPass(bitmap: Bitmap, value: Int)
-
-        fun unsharpMask(bitmap: Bitmap, value: Int)
-
-        fun flip(bitmap: Bitmap)
-
-        fun rotate90ClockWise(bitmap: Bitmap)
-
-        fun rotate90CounterClockWise(bitmap: Bitmap)
-
-        fun sobel(bitmap: Bitmap,value:Int)
-
-        fun modifyRGBContrast(bitmap: Bitmap, red: Double, green: Double, blue: Double)
-
-        fun modifyRGBBrightness(bitmap: Bitmap, red: Double, green: Double, blue: Double)
-
-        fun zoomIn(bitmap: Bitmap, value: Int)
     }
 }
